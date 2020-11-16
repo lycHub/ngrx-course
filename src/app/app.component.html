@@ -1,0 +1,41 @@
+<div id="xm">
+  <xm-header (login)="showLogin = true" (logout)="logout()"></xm-header>
+  <div class="content">
+    <div class="container">
+      <div class="breadcrumb-wrap">
+        <xm-breadcrumb>
+          <xm-breadcrumb-item>全部分类</xm-breadcrumb-item>
+          <xm-breadcrumb-item>
+            <div class="sub-category">
+              <div class="handler">
+                <span class="current">{{currentCategory?.displayName}}</span>
+                <i class="arrow"></i>
+              </div>
+              <div class="category-box">
+                <ul>
+                  <li (click)="changeCategory(item)" [class.checked]="item.id === currentCategory?.id" *ngFor="let item of categories;">{{item.displayName}}</li>
+                </ul>
+              </div>
+            </div>
+          </xm-breadcrumb-item>
+          <ng-container *ngIf="subCategory.length">
+            <xm-breadcrumb-item *ngFor="let item of subCategory">{{ item }}</xm-breadcrumb-item>
+          </ng-container>
+        </xm-breadcrumb>
+      </div>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+<xm-login [show]="showLogin" (hide)="showLogin = false"></xm-login>
+<xm-player
+  [trackList]="playerInfo.trackList"
+  [currentIndex]="playerInfo.currentIndex"
+  [currentTrack]="playerInfo.currentTrack"
+  [album]="playerInfo.album"
+  [playing]="playerInfo.playing"
+  (closed)="closePlayer()"
+  *ngIf="showPlayer"
+  @fadePlayer>
+</xm-player>
+<xm-back-top></xm-back-top>

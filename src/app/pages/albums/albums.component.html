@@ -1,0 +1,78 @@
+<div class="main-content">
+  <div class="categories">
+    <ul>
+      <li [class.checked]="!searchParams.subcategory" (click)="changeSubCategory()">全部</li>
+      <li
+        [class.checked]="item.code === searchParams.subcategory"
+        *ngFor="let item of categoryInfo?.subcategories; trackBy: trackBySubCategories"
+        (click)="changeSubCategory(item)">
+        {{ item.displayValue }}
+      </li>
+    </ul>
+  </div>
+  <div class="conditions">
+    <ng-container *ngFor="let row of categoryInfo?.metadata">
+      <div class="row" *ngIf="showMetaRow(row.name)">
+        <b class="title">{{ row.name }}</b>
+        <ul class="tabs">
+          <li class="tag" (click)="changeMeta(row, item)" *ngFor="let item of row.metaValues; trackBy: trackByMetas">{{ item.displayName }}</li>
+        </ul>
+      </div>
+    </ng-container>
+  
+    <div class="row checked-conditions" *ngIf="checkedMetas.length">
+      <b class="title">已筛选</b>
+      <ul class="tabs">
+        <li class="tag checked" *ngFor="let item of checkedMetas">
+          <span class="label-title">{{item.metaRowName}}</span>
+          <xm-tag [xmClosable]="true" (closed)="unCheckMeta(item)">{{item.metaName}}</xm-tag>
+        </li>
+      </ul>
+      <a class="clear" (click)="unCheckMeta('clear')">清除全部</a>
+    </div>
+  </div>
+  <div class="albums">
+    <div class="album-head">
+      <div class="title">
+        <b>{{ albumsInfo?.pageConfig.h1title }}</b>
+      </div>
+      <ul class="sort">
+        <li
+          *ngFor="let item of sorts; index as i"
+          [class.checked]="i === searchParams.sort"
+          (click)="changeSort(i)">
+          {{item}}
+        </li>
+      </ul>
+    </div>
+    <div class="album-cards">
+      <div class="album-card" [routerLink]="'/album/' + album.albumId" *ngFor="let album of albumsInfo?.albums; trackBy: trackByAlbums">
+        <div class="cover">
+          <!--    图片地址加上!strip=1&quality=7&magick=webp&op_type=3&columns=290&rows=290，尺寸就会变为140 * 140      -->
+          <img class="thumbnail" [xmImgLazy]="album.coverPath + '!strip=1&quality=7&magick=webp&op_type=3&columns=290&rows=290'" [alt]="[album.title]">
+          <img class="icon-play" (click)="playAlbum($event, album.albumId)" src="../../../assets/images/icon-play-cover.png" />
+          <p class="listen-count">
+            <i xmIcon="headset" class="icon"></i>
+            <span>{{ album.playCount | numberFormat }}</span>
+          </p>
+        </div>
+        <div class="abstract">
+          <p class="txt title ellipsis">
+            <xm-tag *ngIf="album.isFinished === 2" xmColor="green" class="tag">完本</xm-tag>
+            <span>{{ album.title }}</span>
+          </p>
+          <p class="txt author"><span>{{ album.anchorName }}</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-wrap">
+    <xm-pagination
+      class="page"
+      [pageNum]="searchParams.page"
+      [pageSize]="searchParams.perPage"
+      [total]="total"
+      (changed)="changePage($event)">
+    </xm-pagination>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<div
+  class="xm-message-wrap"
+  (mouseenter)="enter()"
+  (mouseleave)="leave()"
+  [@.disabled]="!message.options.animate"
+  [@moveUpMotion]="message.state"
+  (@moveUpMotion.done)="animationDone($event)">
+  <div [class]="itemCls">
+    <div class="content">
+      <ng-container *xmStrTplOutlet="message.content">{{ message.content }}</ng-container>
+    </div>
+    <i xmIcon="Close" class="close" (click)="close()" *ngIf="message.options.showClose"></i>
+  </div>
+</div>

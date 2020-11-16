@@ -1,0 +1,14 @@
+.xm-message-container {
+  position: fixed;
+  top: 16px;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  color: rgba(0,0,0,.65);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5715;
+  font-feature-settings: "tnum";
+  pointer-events: none;
+  user-select: none;
+}

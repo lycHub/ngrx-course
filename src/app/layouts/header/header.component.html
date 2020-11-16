@@ -1,0 +1,16 @@
+<div style="height: 61px;" *ngIf="fix"></div>
+<!-- [class.fix]="fix" -->
+<header [@moveUpMotion]="fix">
+  <div class="container">
+    <div class="logo">
+      <img src="../../../assets/images/logo2.png" alt="migu-music" />
+      <h1>Angular</h1>
+    </div>
+    <div class="user">
+      <a *ngIf="!user else context" (click)="login.emit()">请登录</a>
+      <ng-template #context>
+        {{ user.name }},<a (click)="logout.emit()">退出</a>
+      </ng-template>
+    </div>
+  </div>
+</header>

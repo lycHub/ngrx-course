@@ -1,0 +1,11 @@
+<div [class]="rateItemCls || 'xm-rate-item'">
+  <div class="star-wrap back" (click)="clickRate(false)" (mouseenter)="hoverRate(false)">
+    <ng-template [ngTemplateOutlet]="tpl || defaultTpl"></ng-template>
+  </div>
+  <div class="star-wrap front" (click)="clickRate(true)" (mouseenter)="hoverRate(true)">
+    <ng-template [ngTemplateOutlet]="tpl || defaultTpl"></ng-template>
+  </div>
+  <ng-template #defaultTpl>
+    <i class="icon" xmIcon="Star"></i>
+  </ng-template>
+</div>

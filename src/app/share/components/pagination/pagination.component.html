@@ -1,0 +1,25 @@
+<div class="xm-page-wrap">
+  <ul class="xm-pages">
+    <li
+      class="xm-page"
+      *ngFor="let item of listOfPageItems"
+      [class.disabled]="item.disabled"
+      [class.checked]="item.num === pageNum"
+      (click)="pageClick(item)">
+      <ng-container [ngSwitch]="item.type">
+        <a *ngSwitchCase="'page'">{{ item.num }}</a>
+        <ng-container *ngSwitchDefault>
+          <span [ngSwitch]="item.type">
+            <i *ngSwitchCase="'prev'" xmIcon="previewleft" class="icon"></i>
+            <i *ngSwitchCase="'next'" xmIcon="previewright" class="icon"></i>
+            <i *ngSwitchDefault xmIcon="more" class="icon"></i>
+          </span>
+        </ng-container>
+      </ng-container>
+    </li>
+  </ul>
+  <div class="xm-page-navigate">
+    <input type="number" class="xm-input" #to (keyup.enter)="inputVal(+to.value)" [min]="1" [max]="lastNum" />
+    <button xmBtn xmRipples (click)="inputVal(+to.value)">跳转</button>
+  </div>
+</div>
