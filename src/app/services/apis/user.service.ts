@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {Base, Category, User} from './types';
+import {Base, User} from './types';
 import {environment} from '../../../environments/environment';
 import {map} from 'rxjs/operators';
 import {storageKeys} from '../../configs';
 
-interface LoginRes {
+export interface LoginRes {
   user: User;
   token: string;
 }
