@@ -14,6 +14,7 @@ import {InterceptorService} from './services/apis/interceptor.service';
 import {MessageModule} from './share/components/message/message.module';
 import { PlayerComponent } from './layouts/player/player.component';
 import {BackTopModule} from './share/components/back-top/back-top.module';
+import {XmStoreModule} from './store';
 
 
 
@@ -31,7 +32,8 @@ import {BackTopModule} from './share/components/back-top/back-top.module';
     FormsModule,
     ReactiveFormsModule,
     MessageModule,
-    BackTopModule
+    BackTopModule,
+    XmStoreModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true },
