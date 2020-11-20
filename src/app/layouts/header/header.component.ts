@@ -15,6 +15,7 @@ import {fromEvent} from 'rxjs';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ContextService} from '../../services/business/context.service';
+import {ContextStoreService} from '../../services/business/context.store.service';
 
 @Component({
   selector: 'xm-header',
@@ -48,11 +49,11 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     @Inject(DOCUMENT) private doc: Document,
     private el: ElementRef,
     private cdr: ChangeDetectorRef,
-    private contextServe: ContextService
+    private contextStoreServe: ContextStoreService
   ) { }
 
   ngOnInit(): void {
-    this.contextServe.getUser().subscribe(user => {
+    this.contextStoreServe.getUser().subscribe(user => {
       this.user = user;
       this.cdr.markForCheck();
     });

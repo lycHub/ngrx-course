@@ -7,14 +7,10 @@ import {combineLatest} from 'rxjs';
 import {WindowService} from './services/tools/window.service';
 import {UserService} from './services/apis/user.service';
 import {storageKeys} from './configs';
-import {ContextService} from './services/business/context.service';
 import {MessageService} from './share/components/message/message.service';
 import {PlayerService} from './services/business/player.service';
 import {animate, style, transition, trigger} from '@angular/animations';
-import {select, Store} from '@ngrx/store';
-import {ContextStoreModule} from './store/context';
-import {getUser, selectContextFeature} from './store/context/selectors';
-import {setUser} from './store/context/action';
+import {ContextStoreService} from './services/business/context.store.service';
 
 @Component({
   selector: 'xm-root',
@@ -54,28 +50,15 @@ export class AppComponent implements OnInit {
     private router: Router,
     private winServe: WindowService,
     private userServe: UserService,
-    private contextServe: ContextService,
+    private contextStoreServe: ContextStoreService,
     private messageServe: MessageService,
-    private playerServe: PlayerService,
-    private store$: Store<ContextStoreModule>
-  ) {
-    this.store$.select(selectContextFeature).pipe(select(getUser)).subscribe(user => {
-      console.log('context user', user);
-    });
-  }
-
-  setUser(): void {
-    this.store$.dispatch(setUser({
-      phone: '1111',
-      name: '张三',
-      password: 'aaa'
-    }));
-  }
+    private playerServe: PlayerService
+  ) {}
 
   ngOnInit(): void {
     if (this.winServe.getStorage(storageKeys.remember)) {
       this.userServe.userInfo().subscribe(({ user, token }) => {
-        this.contextServe.setUser(user);
+        this.contextStoreServe.setUser(user);
         this.winServe.setStorage(storageKeys.auth, token);
       }, error => {
         console.error(error);
@@ -142,7 +125,7 @@ export class AppComponent implements OnInit {
 
   logout(): void {
     this.userServe.logout().subscribe(() => {
-      this.contextServe.setUser(null);
+      this.contextStoreServe.setUser(null);
       this.clearStorage();
       this.messageServe.success('退出成功');
     });

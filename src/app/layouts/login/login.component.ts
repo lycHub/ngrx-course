@@ -19,8 +19,8 @@ import {animate, style, transition, trigger, AnimationEvent} from '@angular/anim
 import {UserService} from '../../services/apis/user.service';
 import {WindowService} from '../../services/tools/window.service';
 import {storageKeys} from '../../configs';
-import {ContextService} from '../../services/business/context.service';
 import {MessageService} from '../../share/components/message/message.service';
+import {ContextStoreService} from '../../services/business/context.store.service';
 
 @Component({
   selector: 'xm-login',
@@ -72,7 +72,7 @@ export class LoginComponent implements OnInit, AfterViewInit, OnChanges {
     @Inject(PLATFORM_ID) private platformId: object,
     private userServe: UserService,
     private winServe: WindowService,
-    private contextServe: ContextService,
+    private contextStoreServe: ContextStoreService,
     private rd2: Renderer2,
     private messageServe: MessageService) { }
 
@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit, AfterViewInit, OnChanges {
     // console.log('submit', this.formValues.value);
     if (this.formValues.valid) {
       this.userServe.login(this.formValues.value).subscribe(({ user, token }) => {
-        this.contextServe.setUser(user);
+        this.contextStoreServe.setUser(user);
         this.winServe.setStorage(storageKeys.auth, token);
         if (this.remember) {
           this.winServe.setStorage(storageKeys.remember, 'true');
