@@ -10,7 +10,7 @@ export interface ContextState {
 }
 
 export const initialState: ContextState = {
-  token: '',
+  token: 'aaa',
   user: null
 }
 

@@ -3,9 +3,7 @@ import {AlbumService} from './services/apis/album.service';
 import {AlbumInfo, Category, Track} from './services/apis/types';
 import {CategoryService} from './services/business/category.service';
 import {Router} from '@angular/router';
-import {combineLatest, empty, merge, of, Subscription} from 'rxjs';
-import {OverlayRef, OverlayService} from './services/tools/overlay.service';
-import {pluck, switchMap} from 'rxjs/operators';
+import {combineLatest} from 'rxjs';
 import {WindowService} from './services/tools/window.service';
 import {UserService} from './services/apis/user.service';
 import {storageKeys} from './configs';
@@ -13,6 +11,10 @@ import {ContextService} from './services/business/context.service';
 import {MessageService} from './share/components/message/message.service';
 import {PlayerService} from './services/business/player.service';
 import {animate, style, transition, trigger} from '@angular/animations';
+import {select, Store} from '@ngrx/store';
+import {ContextStoreModule} from './store/context';
+import {getUser, selectContextFeature} from './store/context/selectors';
+import {setUser} from './store/context/action';
 
 @Component({
   selector: 'xm-root',
@@ -54,9 +56,20 @@ export class AppComponent implements OnInit {
     private userServe: UserService,
     private contextServe: ContextService,
     private messageServe: MessageService,
-    private playerServe: PlayerService
+    private playerServe: PlayerService,
+    private store$: Store<ContextStoreModule>
   ) {
+    this.store$.select(selectContextFeature).pipe(select(getUser)).subscribe(user => {
+      console.log('context user', user);
+    });
+  }
 
+  setUser(): void {
+    this.store$.dispatch(setUser({
+      phone: '1111',
+      name: '张三',
+      password: 'aaa'
+    }));
   }
 
   ngOnInit(): void {
