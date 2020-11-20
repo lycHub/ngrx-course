@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { EffectsModule } from '@ngrx/effects';
 import {StoreModule} from '@ngrx/store';
 import {ContextStoreModule} from './context';
 
@@ -8,6 +9,7 @@ import {ContextStoreModule} from './context';
   declarations: [],
   imports: [
     StoreModule.forRoot({}),
+    EffectsModule.forRoot(),
     ContextStoreModule
   ]
 })
