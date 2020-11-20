@@ -5,9 +5,7 @@ import {CategoryService} from './services/business/category.service';
 import {Router} from '@angular/router';
 import {combineLatest} from 'rxjs';
 import {WindowService} from './services/tools/window.service';
-import {UserService} from './services/apis/user.service';
 import {storageKeys} from './configs';
-import {MessageService} from './share/components/message/message.service';
 import {PlayerService} from './services/business/player.service';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {ContextStoreService} from './services/business/context.store.service';
@@ -49,21 +47,13 @@ export class AppComponent implements OnInit {
     private categoryServe: CategoryService,
     private router: Router,
     private winServe: WindowService,
-    private userServe: UserService,
     private contextStoreServe: ContextStoreService,
-    private messageServe: MessageService,
     private playerServe: PlayerService
   ) {}
 
   ngOnInit(): void {
     if (this.winServe.getStorage(storageKeys.remember)) {
-      this.userServe.userInfo().subscribe(({ user, token }) => {
-        this.contextStoreServe.setUser(user);
-        this.winServe.setStorage(storageKeys.auth, token);
-      }, error => {
-        console.error(error);
-        this.clearStorage();
-      });
+      this.contextStoreServe.userInfo();
     }
     this.init();
     this.watchPlayer();
@@ -124,15 +114,7 @@ export class AppComponent implements OnInit {
   }
 
   logout(): void {
-    this.userServe.logout().subscribe(() => {
-      this.contextStoreServe.setUser(null);
-      this.clearStorage();
-      this.messageServe.success('退出成功');
-    });
-  }
-  private clearStorage(): void {
-    this.winServe.removeStorage(storageKeys.remember);
-    this.winServe.removeStorage(storageKeys.auth);
+    this.contextStoreServe.logout();
   }
 
   closePlayer(): void {

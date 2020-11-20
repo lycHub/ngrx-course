@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {catchError, map, mergeMap, tap} from 'rxjs/operators';
 import {EMPTY, throwError} from 'rxjs';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import {getUserInfo, login, loginSuccess, logout, setUser} from './action';
+import {getUserInfo, login, loginSuccess, logout, logoutSuccess, setUser} from './action';
 import {UserService} from '../../services/apis/user.service';
 import {storageKeys} from '../../configs';
 import {WindowService} from '../../services/tools/window.service';
@@ -40,7 +40,7 @@ export class UserEffects {
   logout$ = createEffect(() => this.actions$.pipe(
     ofType(logout),
     mergeMap(() => this.userServe.logout()),
-    map(() => setUser(null)),
+    map(() => logoutSuccess()),
     tap(res => {
       this.clearStorage();
       this.messageServe.success('退出成功');
