@@ -7,6 +7,7 @@ import {DirectivesModule} from '../../share/directives/directives.module';
 import {PipesModule} from '../../share/pipes/pipes.module';
 import {TagModule} from '../../share/components/tag/tag.module';
 import {PaginationModule} from '../../share/components/pagination/pagination.module';
+import {ReactiveComponentModule} from '@ngrx/component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import {PaginationModule} from '../../share/components/pagination/pagination.mod
     DirectivesModule,
     PipesModule,
     TagModule,
-    PaginationModule
+    PaginationModule,
+    ReactiveComponentModule
   ]
 })
 export class AlbumsModule { }

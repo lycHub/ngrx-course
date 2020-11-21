@@ -11,6 +11,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CheckboxModule} from '../../share/components/checkbox/checkbox.module';
 import {PaginationModule} from '../../share/components/pagination/pagination.module';
 import {RateModule} from '../../share/components/rate/rate.module';
+import {ReactiveComponentModule} from '@ngrx/component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import {RateModule} from '../../share/components/rate/rate.module';
     FormsModule,
     CheckboxModule,
     PaginationModule,
-    RateModule
+    RateModule,
+    ReactiveComponentModule
   ]
 })
 export class AlbumModule { }

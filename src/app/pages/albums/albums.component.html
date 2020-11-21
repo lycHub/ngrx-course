@@ -1,4 +1,4 @@
-<div class="main-content">
+<div class="main-content" *ngrxLet="categoryInfo$; let categoryInfo">
   <div class="categories">
     <ul>
       <li [class.checked]="!searchParams.subcategory" (click)="changeSubCategory()">全部</li>
@@ -31,7 +31,7 @@
       <a class="clear" (click)="unCheckMeta('clear')">清除全部</a>
     </div>
   </div>
-  <div class="albums">
+  <div class="albums" *ngrxLet="albumsInfo$; let albumsInfo">
     <div class="album-head">
       <div class="title">
         <b>{{ albumsInfo?.pageConfig.h1title }}</b>

@@ -1,14 +1,15 @@
 import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy, ViewChild, TemplateRef} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {AlbumService, AlbumTrackArgs} from '../../services/apis/album.service';
-import {combineLatest, forkJoin, Subject} from 'rxjs';
+import {AlbumTrackArgs} from '../../services/apis/album.service';
+import {combineLatest, Observable, Subject} from 'rxjs';
 import {AlbumInfo, Anchor, RelateAlbum, Track} from '../../services/apis/types';
 import {IconType} from '../../share/directives/icon/type';
-import {first, takeUntil} from 'rxjs/operators';
+import {first, skip, takeUntil} from 'rxjs/operators';
 import {PlayerService} from '../../services/business/player.service';
 import {MessageService} from '../../share/components/message/message.service';
 import {PageService} from '../../services/tools/page.service';
 import {CategoryStoreService} from '../../services/business/category.store.service';
+import {AlbumStoreService} from '../../services/business/album.store.service';
 
 interface MoreState {
   full: boolean;
@@ -23,9 +24,9 @@ interface MoreState {
 })
 export class AlbumComponent implements OnInit, OnDestroy {
   albumInfo: AlbumInfo;
-  score: number;
+  score$: Observable<number>;
   anchor: Anchor;
-  relateAlbums: RelateAlbum[];
+  relateAlbums$: Observable<RelateAlbum[]>;
   tracks: Track[] = [];
   selectedTracks: Track[] = [];
   total = 0;
@@ -47,12 +48,12 @@ export class AlbumComponent implements OnInit, OnDestroy {
   @ViewChild('msgTpl') private msgTpl: TemplateRef<void>;
   constructor(
     private route: ActivatedRoute,
-    private albumServe: AlbumService,
     private categoryStoreServe: CategoryStoreService,
     private cdr: ChangeDetectorRef,
     private playerServe: PlayerService,
     private messageServe: MessageService,
-    private pageServe: PageService
+    private pageServe: PageService,
+    private albumStoreServe: AlbumStoreService
   ) { }
 
   playAll(): void {
@@ -165,7 +166,10 @@ export class AlbumComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.paramMap.pipe(takeUntil(this.destory$)).subscribe(paramMap => {
       this.trackParams.albumId = paramMap.get('albumId');
+      this.trackParams.pageNum = 1;
       this.initPageData();
+      this.updateTracks();
+      this.watchTracksInfo();
       this.watchPlayer();
     });
   }
@@ -186,23 +190,21 @@ export class AlbumComponent implements OnInit, OnDestroy {
     }
   }
   updateTracks(): void {
-    this.albumServe.tracks(this.trackParams).subscribe(res => {
+    this.albumStoreServe.requestTracksInfo(this.trackParams);
+  }
+  watchTracksInfo(): void {
+    this.albumStoreServe.getTracksInfo().pipe(skip(1), takeUntil(this.destory$)).subscribe(res => {
       this.tracks = res.tracks;
       this.total = res.trackTotalCount;
       this.cdr.markForCheck();
     });
   }
   private initPageData(): void {
-    forkJoin([
-      this.albumServe.album(this.trackParams.albumId),
-      this.albumServe.albumScore(this.trackParams.albumId),
-      this.albumServe.relateAlbums(this.trackParams.albumId),
-    ]).pipe(first()).subscribe(([albumInfo, score, relateAlbums]) => {
-      this.albumInfo = { ...albumInfo.mainInfo, albumId: albumInfo.albumId };
-      this.score = score / 2;
+    this.albumStoreServe.requestAlbum(this.trackParams.albumId);
+    this.albumStoreServe.getAlbumInfo().pipe(skip(1), first()).subscribe(albumInfo => {
+      // console.log('albumInfo', albumInfo);
+      this.albumInfo = albumInfo;
       this.anchor = albumInfo.anchorInfo;
-      this.updateTracks();
-      this.relateAlbums = relateAlbums.slice(0, 10);
       this.categoryStoreServe.getCategory().pipe(first()).subscribe(category => {
         const { categoryPinyin } = this.albumInfo.crumbs;
         if (category !== categoryPinyin) {
@@ -217,6 +219,8 @@ export class AlbumComponent implements OnInit, OnDestroy {
       );
       this.cdr.markForCheck();
     });
+    this.score$ = this.albumStoreServe.getScore();
+    this.relateAlbums$ = this.albumStoreServe.getRelateAlbums();
   }
 
   trackByTracks(index: number, item: Track): number { return item.trackId; }

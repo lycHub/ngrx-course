@@ -2,13 +2,14 @@ import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@an
 import {AlbumArgs, AlbumService, AlbumsInfo, CategoryInfo} from '../../services/apis/album.service';
 import {Album, MetaData, MetaValue, SubCategory} from '../../services/apis/types';
 import {ActivatedRoute, Router} from '@angular/router';
-import {forkJoin} from 'rxjs';
-import {withLatestFrom} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {first, skip, withLatestFrom} from 'rxjs/operators';
 import {WindowService} from '../../services/tools/window.service';
 import {storageKeys} from '../../configs';
 import {PlayerService} from '../../services/business/player.service';
 import {PageService} from '../../services/tools/page.service';
 import {CategoryStoreService} from '../../services/business/category.store.service';
+import {AlbumStoreService} from '../../services/business/album.store.service';
 
 interface CheckedMeta {
   metaRowId: number;
@@ -33,9 +34,9 @@ export class AlbumsComponent implements OnInit {
     perPage: 30
   };
   total = 0;
-  categoryInfo: CategoryInfo;
+  categoryInfo$: Observable<CategoryInfo>;
+  albumsInfo$: Observable<AlbumsInfo>;
   checkedMetas: CheckedMeta[] = [];
-  albumsInfo: AlbumsInfo;
   sorts = ['综合排序', '最近更新', '播放最多'];
 
   constructor(
@@ -46,7 +47,8 @@ export class AlbumsComponent implements OnInit {
     private categoryStoreServe: CategoryStoreService,
     private winServe: WindowService,
     private playerServe: PlayerService,
-    private pageServe: PageService
+    private pageServe: PageService,
+    private albumStoreServe: AlbumStoreService
   ) { }
 
   ngOnInit(): void {
@@ -74,6 +76,8 @@ export class AlbumsComponent implements OnInit {
           this.searchParams.meta = cacheMetas;
         }
       }
+      this.categoryInfo$ = this.categoryStoreServe.getCategoryInfo();
+      this.albumsInfo$ = this.albumStoreServe.getAlbumsInfo();
       this.updatePageData(needSetStatus);
     });
     this.pageServe.setPageInfo(
@@ -170,56 +174,46 @@ export class AlbumsComponent implements OnInit {
   }
 
   private updatePageData(needSetStatus = false): void {
-    forkJoin([
-      this.albumServe.albums(this.searchParams),
-      this.albumServe.detailCategoryPageInfo(this.searchParams)
-    ]).subscribe(([albumsInfo, categoryInfo]) => {
-      this.categoryInfo = categoryInfo;
-      // console.log('AlbumInfo', albumsInfo);
-      this.total = albumsInfo.total;
-      this.albumsInfo = albumsInfo;
-      if (needSetStatus) {
-        this.setStatus(categoryInfo);
-      }
-      this.cdr.markForCheck();
-    });
+    this.albumStoreServe.requestAlbumsInfo(this.searchParams);
+    this.categoryStoreServe.initCategoryInfo(this.searchParams);
+    if (needSetStatus) {
+      this.setStatus();
+    }
   }
 
   private updateAlbums(): void {
-    this.albumServe.albums(this.searchParams).subscribe(albumsInfo => {
-      // console.log('albumsInfo', albumsInfo);
-      this.albumsInfo = albumsInfo;
-      this.total = albumsInfo.total;
-      this.cdr.markForCheck();
-    });
+    this.albumStoreServe.requestAlbumsInfo(this.searchParams);
   }
 
-  private setStatus({ metadata, subcategories }: CategoryInfo): void {
-    const subCategory = subcategories.find(item => item.code === this.searchParams.subcategory);
-    // console.log('metadata', metadata);
-    if (subCategory) {
-      this.categoryStoreServe.setSubCategory([subCategory.displayValue]);
-    }
-    if (this.searchParams.meta) {
-      // 19_156-22_4433
-      const metasMap = this.searchParams.meta.split('-').map(item => item.split('_'));
-      console.log('metasMap', metasMap);
-      metasMap.forEach(meta => {
-        const targetRow = metadata.find(row => row.id === Number(meta[0]));
-        // console.log('targetRow', targetRow);
-        // 从详情导航过来的标签不一定存在
-        const { id: metaRowId, name, metaValues } = targetRow || metadata[0];
-        const targetMeta = metaValues.find(item => item.id === Number(meta[1]));
-        const { id, displayName } = targetMeta || metaValues[0];
-        this.checkedMetas.push({
-          metaRowId,
-          metaRowName: name,
-          metaId: id,
-          metaName: displayName
+  private setStatus(): void {
+    this.categoryInfo$.pipe(skip(1), first()).subscribe(res => {
+      // console.log('res', res);
+      const { subcategories, metadata } = res;
+      const subCategory = subcategories.find(item => item.code === this.searchParams.subcategory);
+      // console.log('metadata', metadata);
+      if (subCategory) {
+        this.categoryStoreServe.setSubCategory([subCategory.displayValue]);
+      }
+      if (this.searchParams.meta) {
+        // 19_156-22_4433
+        const metasMap = this.searchParams.meta.split('-').map(item => item.split('_'));
+        console.log('metasMap', metasMap);
+        metasMap.forEach(meta => {
+          const targetRow = metadata.find(row => row.id === Number(meta[0]));
+          // console.log('targetRow', targetRow);
+          // 从详情导航过来的标签不一定存在
+          const { id: metaRowId, name, metaValues } = targetRow || metadata[0];
+          const targetMeta = metaValues.find(item => item.id === Number(meta[1]));
+          const { id, displayName } = targetMeta || metaValues[0];
+          this.checkedMetas.push({
+            metaRowId,
+            metaRowName: name,
+            metaId: id,
+            metaName: displayName
+          });
         });
-      });
-
-    }
+      }
+    });
   }
 
   private clearSubCategory(): void {

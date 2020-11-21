@@ -64,6 +64,7 @@ export interface AlbumInfo {
   isFinished: number; // 1 - 连载 0 - 完结
   rate: number;
   playCount: number;
+  anchorInfo: Anchor;
   crumbs: {
     // categoryId: 5
     categoryPinyin: string;

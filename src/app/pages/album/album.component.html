@@ -14,9 +14,9 @@
           <div class="record">
             <div class="rate">
               <div class="star-wrap">
-                <xm-rate [(ngModel)]="score" disabled></xm-rate>
+                <xm-rate [ngModel]="score$ | ngrxPush" disabled></xm-rate>
               </div>
-              <span class="score">{{ score * 2 }}分</span>
+              <span class="score">{{ (score$ | ngrxPush) * 2 }}分</span>
             </div>
             <div class="play-count">
               <i xmIcon="headset" class="icon"></i>
@@ -151,7 +151,7 @@
       </div>
       <div class="card-body">
         <div class="albums">
-          <div class="album-item" [routerLink]="'../' + item.id" *ngFor="let item of relateAlbums">
+          <div class="album-item" [routerLink]="'../' + item.id" *ngFor="let item of relateAlbums$ | ngrxPush">
             <div class="thumbnail">
               <img style="height: 100%;" [xmImgLazy]="'//imagev2.xmcdn.com/' + item.coverPath" [alt]="item.title">
             </div>
