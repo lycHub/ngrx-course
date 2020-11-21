@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
-import {META_REDUCERS, StoreModule} from '@ngrx/store';
+import {StoreModule} from '@ngrx/store';
 import {ContextStoreModule} from './context';
-import {metaReducerFactory, STORE_CONFIG} from './configs';
+import {STORE_CONFIG} from './configs';
+import {extModules} from '../../build-specifics';
 
 
 
@@ -12,7 +13,8 @@ import {metaReducerFactory, STORE_CONFIG} from './configs';
   imports: [
     StoreModule.forRoot({}, STORE_CONFIG),
     EffectsModule.forRoot(),
-    ContextStoreModule
+    ContextStoreModule,
+    extModules
   ]
   // providers: [
   //   {
