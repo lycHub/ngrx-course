@@ -7,7 +7,8 @@
       <h1>Angular</h1>
     </div>
     <div class="mid">
-      <a routerLink="/book">Book</a>
+      <a routerLink="/book">Book</a> ｜
+      <a routerLink="/movie">Movie</a>
     </div>
     <div class="user">
       <a *ngIf="!user?.name else context" (click)="login.emit()">请登录</a>

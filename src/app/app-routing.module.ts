@@ -12,6 +12,11 @@ const routes: Routes = [
     loadChildren: () => import('./pages/book/book.module').then(m => m.BookModule),
     data: { title: '图书' }
   },
+  {
+    path: 'movie',
+    loadChildren: () => import('./pages/movie/movie.module').then(m => m.MovieModule),
+    data: { title: '电影' }
+  },
   { path: '', redirectTo: '/albums/youshengshu', pathMatch: 'full' },
   { path: '**', redirectTo: '/albums/youshengshu' }
 ];
