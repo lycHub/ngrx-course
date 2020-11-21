@@ -4,6 +4,7 @@ import {StoreModule} from '@ngrx/store';
 import {ContextStoreModule} from './context';
 import {STORE_CONFIG} from './configs';
 import {extModules} from '../../build-specifics';
+import {BookStoreModule} from './book';
 
 
 
@@ -14,6 +15,7 @@ import {extModules} from '../../build-specifics';
     StoreModule.forRoot({}, STORE_CONFIG),
     EffectsModule.forRoot(),
     ContextStoreModule,
+    BookStoreModule,
     extModules
   ]
   // providers: [
