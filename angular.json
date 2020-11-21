@@ -158,6 +158,7 @@
   },
   "defaultProject": "xmly",
   "cli": {
-    "analytics": "f4c866b2-2bc1-42ef-a236-b1ba6be8696c"
+    "analytics": "f4c866b2-2bc1-42ef-a236-b1ba6be8696c",
+    "defaultCollection": "@ngrx/schematics"
   }
 }
