@@ -14,3 +14,15 @@ function debug(reducer: ActionReducer<any>): ActionReducer<any> {
 }
 
 export const metaReducers: MetaReducer<any>[] = [debug];
+
+
+export const STORE_CONFIG = {
+  runtimeChecks: {
+    // strictStateImmutability: true,
+    // strictActionImmutability: true,
+    strictStateSerializability: true,
+    strictActionSerializability: true,
+    strictActionWithinNgZone: true,
+    strictActionTypeUniqueness: true,
+  }
+}
