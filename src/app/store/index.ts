@@ -7,6 +7,7 @@ import {extModules} from '../../build-specifics';
 import {BookStoreModule} from './book';
 import {RouterStoreModule} from './router';
 import {CategoryStoreModule} from './category';
+import {AlbumStoreModule} from './album';
 
 
 
@@ -18,6 +19,7 @@ import {CategoryStoreModule} from './category';
     EffectsModule.forRoot(),
     ContextStoreModule,
     CategoryStoreModule,
+    AlbumStoreModule,
     BookStoreModule,
     RouterStoreModule,
     extModules
