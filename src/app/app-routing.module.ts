@@ -7,6 +7,11 @@ const routes: Routes = [
     loadChildren: () => import('./pages/album/album.module').then(m => m.AlbumModule),
     data: { title: '专辑详情' }
   },
+  {
+    path: 'book',
+    loadChildren: () => import('./pages/book/book.module').then(m => m.BookModule),
+    data: { title: '图书' }
+  },
   { path: '', redirectTo: '/albums/youshengshu', pathMatch: 'full' },
   { path: '**', redirectTo: '/albums/youshengshu' }
 ];
