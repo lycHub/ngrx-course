@@ -93,7 +93,7 @@ export class AlbumsComponent implements OnInit {
   }
 
   changeSubCategory(subCategory?: SubCategory): void {
-    console.log('subCategory', subCategory);
+    // console.log('subCategory', subCategory);
     if (subCategory) {
       this.searchParams.subcategory = subCategory.code;
       this.categoryServe.setSubCategory([subCategory.displayValue]);
@@ -196,7 +196,7 @@ export class AlbumsComponent implements OnInit {
 
   private setStatus({ metadata, subcategories }: CategoryInfo): void {
     const subCategory = subcategories.find(item => item.code === this.searchParams.subcategory);
-    console.log('metadata', metadata);
+    // console.log('metadata', metadata);
     if (subCategory) {
       this.categoryServe.setSubCategory([subCategory.displayValue]);
     }

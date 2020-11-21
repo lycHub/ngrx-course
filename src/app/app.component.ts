@@ -9,9 +9,6 @@ import {storageKeys} from './configs';
 import {PlayerService} from './services/business/player.service';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {ContextStoreService} from './services/business/context.store.service';
-import {RouterStoreModule} from './store/router';
-import {select, Store} from '@ngrx/store';
-import {selectCustomRouter} from './store/router/custom.reducer';
 
 @Component({
   selector: 'xm-root',
@@ -51,22 +48,8 @@ export class AppComponent implements OnInit {
     private router: Router,
     private winServe: WindowService,
     private contextStoreServe: ContextStoreService,
-    private playerServe: PlayerService,
-    readonly routerStore$: Store<RouterStoreModule>
-  ) {
-    const routerFeature = this.routerStore$.select(selectCustomRouter);
-    routerFeature.subscribe(res => {
-      console.log('selectRouter', res);
-    });
-
-    // this.routerStore$.select(selectUrl).subscribe(res => {
-    //   console.log('selectUrl', res);
-    // });
-
-    // this.routerStore$.select(selectRouteParams).subscribe(res => {
-    //   console.log('selectRouteParam', res);
-    // });
-  }
+    private playerServe: PlayerService
+  ) {}
 
   ngOnInit(): void {
     if (this.winServe.getStorage(storageKeys.remember)) {

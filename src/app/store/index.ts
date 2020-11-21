@@ -6,8 +6,7 @@ import {STORE_CONFIG} from './configs';
 import {extModules} from '../../build-specifics';
 import {BookStoreModule} from './book';
 import {RouterStoreModule} from './router';
-import * as fromMobile from './mobile';
-import { CategoryEffects } from './category/category.effects';
+import {CategoryStoreModule} from './category';
 
 
 
@@ -18,11 +17,10 @@ import { CategoryEffects } from './category/category.effects';
     StoreModule.forRoot({}, STORE_CONFIG),
     EffectsModule.forRoot(),
     ContextStoreModule,
+    CategoryStoreModule,
     BookStoreModule,
     RouterStoreModule,
-    extModules,
-    StoreModule.forFeature(fromMobile.mobileFeatureKey, fromMobile.reducers, { metaReducers: fromMobile.metaReducers }),
-    EffectsModule.forFeature([CategoryEffects])
+    extModules
   ]
   // providers: [
   //   {
