@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
-import {StoreModule} from '@ngrx/store';
+import {META_REDUCERS, StoreModule} from '@ngrx/store';
 import {ContextStoreModule} from './context';
-import {metaReducers} from './configs';
+import {metaReducerFactory} from './configs';
 
 
 
@@ -10,11 +10,16 @@ import {metaReducers} from './configs';
 @NgModule({
   declarations: [],
   imports: [
-    StoreModule.forRoot({}, {
-      metaReducers
-    }),
+    StoreModule.forRoot({}),
     EffectsModule.forRoot(),
     ContextStoreModule
+  ],
+  providers: [
+    {
+      provide: META_REDUCERS,
+      useFactory: metaReducerFactory,
+      multi: true,
+    },
   ]
 })
 export class XmStoreModule { }
