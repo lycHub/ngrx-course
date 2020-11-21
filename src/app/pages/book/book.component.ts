@@ -19,11 +19,11 @@ let flag = 0;
       <button xmBtn xmRipples (click)="select()">select a book</button> |
       <button xmBtn xmRipples (click)="select2()">select a book2</button>
       <ul>
-        <li *ngFor="let book of books$ | async">{{ book.title }}</li>
+        <li *ngFor="let book of books$ | ngrxPush">{{ book.title }}</li>
       </ul>
-      <p>
+      <p *ngrxLet="selectedBook$ as s">
         当前选中的book：
-        {{ (selectedBook$ | async)?.title }}
+        {{ s?.title }}
       </p>
     </div>
   `,

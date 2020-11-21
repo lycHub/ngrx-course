@@ -12,12 +12,12 @@ import {MovieStore} from './movie-store.service';
       <button xmBtn xmRipples (click)="resetMovies()">reset movies</button>
       <h3>movie list</h3>
       <ul>
-        <li *ngFor="let item of movies$ | async">{{ item.title }}</li>
+        <li *ngFor="let item of movies$ | ngrxPush">{{ item.title }}</li>
       </ul>
     
       <h4>hot movies</h4>
       <ul>
-        <li *ngFor="let item of hotMovies | async">{{ item.title }}</li>
+        <li *ngFor="let item of hotMovies | ngrxPush">{{ item.title }}</li>
       </ul>
     </div>
   `,
