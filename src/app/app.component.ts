@@ -1,14 +1,13 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {AlbumService} from './services/apis/album.service';
 import {AlbumInfo, Category, Track} from './services/apis/types';
-import {CategoryService} from './services/business/category.service';
 import {Router} from '@angular/router';
-import {combineLatest} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {WindowService} from './services/tools/window.service';
 import {storageKeys} from './configs';
 import {PlayerService} from './services/business/player.service';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {ContextStoreService} from './services/business/context.store.service';
+import {CategoryStoreService} from './services/business/category.store.service';
 
 @Component({
   selector: 'xm-root',
@@ -28,10 +27,10 @@ import {ContextStoreService} from './services/business/context.store.service';
   ]
 })
 export class AppComponent implements OnInit {
-  currentCategory: Category;
-  categories: Category[] = [];
+  currentCategory$: Observable<Category>;
+  categories$: Observable<Category[]>;
+  subCategory$: Observable<string[]>;
   categoryPinyin = '';
-  subCategory: string[] = [];
   showLogin = false;
   showPlayer = false;
   playerInfo: {
@@ -42,12 +41,11 @@ export class AppComponent implements OnInit {
     playing: boolean;
   };
   constructor(
-    private albumServe: AlbumService,
     private cdr: ChangeDetectorRef,
-    private categoryServe: CategoryService,
     private router: Router,
     private winServe: WindowService,
     private contextStoreServe: ContextStoreService,
+    private categoryStoreServe: CategoryStoreService,
     private playerServe: PlayerService
   ) {}
 
@@ -85,32 +83,10 @@ export class AppComponent implements OnInit {
     this.router.navigateByUrl('/albums/' + category.pinyin);
   }
   private init(): void {
-    combineLatest(
-      this.categoryServe.getCategory(),
-      this.categoryServe.getSubCategory()
-    ).subscribe(([category, subCategory]) => {
-      // console.log('get category', category);
-      if (category !== this.categoryPinyin) {
-        this.categoryPinyin = category;
-        if (this.categories.length) {
-          this.setCurrentCategory();
-        }
-      }
-      this.subCategory = subCategory;
-    });
-    this.getCategories();
-  }
-
-  private getCategories(): void {
-    this.albumServe.categories().subscribe(categories => {
-      this.categories = categories;
-      this.setCurrentCategory();
-      this.cdr.markForCheck();
-    });
-  }
-
-  private setCurrentCategory(): void {
-    this.currentCategory = this.categories.find(item => item.pinyin === this.categoryPinyin);
+    this.categoryStoreServe.initCategories();
+    this.categories$ = this.categoryStoreServe.getCategories();
+    this.subCategory$ = this.categoryStoreServe.getSubCategory();
+    this.currentCategory$ = this.categoryStoreServe.getCurrentCategory();
   }
 
   logout(): void {

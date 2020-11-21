@@ -15,6 +15,7 @@ import {MessageModule} from './share/components/message/message.module';
 import { PlayerComponent } from './layouts/player/player.component';
 import {BackTopModule} from './share/components/back-top/back-top.module';
 import {XmStoreModule} from './store';
+import {ReactiveComponentModule} from '@ngrx/component';
 
 
 
@@ -33,12 +34,13 @@ import {XmStoreModule} from './store';
     ReactiveFormsModule,
     MessageModule,
     BackTopModule,
-    XmStoreModule
+    XmStoreModule,
+    ReactiveComponentModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true },
   ],
-  exports: [BackTopModule, HeaderComponent, BreadcrumbModule, BrowserModule, AppRoutingModule, LoginComponent, PlayerComponent]
+  exports: [ReactiveComponentModule, BackTopModule, HeaderComponent, BreadcrumbModule, BrowserModule, AppRoutingModule, LoginComponent, PlayerComponent]
 })
 export class CoreModule {
   constructor(@SkipSelf() @Optional() parentModule: CoreModule) {

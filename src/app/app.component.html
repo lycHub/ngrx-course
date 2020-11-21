@@ -6,19 +6,19 @@
         <xm-breadcrumb>
           <xm-breadcrumb-item>全部分类</xm-breadcrumb-item>
           <xm-breadcrumb-item>
-            <div class="sub-category">
+            <div class="sub-category" *ngrxLet="currentCategory$ as currentCategory">
               <div class="handler">
                 <span class="current">{{currentCategory?.displayName}}</span>
                 <i class="arrow"></i>
               </div>
               <div class="category-box">
                 <ul>
-                  <li (click)="changeCategory(item)" [class.checked]="item.id === currentCategory?.id" *ngFor="let item of categories;">{{item.displayName}}</li>
+                  <li (click)="changeCategory(item)" [class.checked]="item.id === currentCategory?.id" *ngFor="let item of categories$ | ngrxPush;">{{item.displayName}}</li>
                 </ul>
               </div>
             </div>
           </xm-breadcrumb-item>
-          <ng-container *ngIf="subCategory.length">
+          <ng-container *ngIf="subCategory$ | ngrxPush as subCategory">
             <xm-breadcrumb-item *ngFor="let item of subCategory">{{ item }}</xm-breadcrumb-item>
           </ng-container>
         </xm-breadcrumb>

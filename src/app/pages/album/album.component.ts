@@ -2,13 +2,13 @@ import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy
 import {ActivatedRoute} from '@angular/router';
 import {AlbumService, AlbumTrackArgs} from '../../services/apis/album.service';
 import {combineLatest, forkJoin, Subject} from 'rxjs';
-import {CategoryService} from '../../services/business/category.service';
 import {AlbumInfo, Anchor, RelateAlbum, Track} from '../../services/apis/types';
 import {IconType} from '../../share/directives/icon/type';
 import {first, takeUntil} from 'rxjs/operators';
 import {PlayerService} from '../../services/business/player.service';
 import {MessageService} from '../../share/components/message/message.service';
 import {PageService} from '../../services/tools/page.service';
+import {CategoryStoreService} from '../../services/business/category.store.service';
 
 interface MoreState {
   full: boolean;
@@ -48,7 +48,7 @@ export class AlbumComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private albumServe: AlbumService,
-    private categoryServe: CategoryService,
+    private categoryStoreServe: CategoryStoreService,
     private cdr: ChangeDetectorRef,
     private playerServe: PlayerService,
     private messageServe: MessageService,
@@ -203,13 +203,13 @@ export class AlbumComponent implements OnInit, OnDestroy {
       this.anchor = albumInfo.anchorInfo;
       this.updateTracks();
       this.relateAlbums = relateAlbums.slice(0, 10);
-      this.categoryServe.getCategory().pipe(first()).subscribe(category => {
+      this.categoryStoreServe.getCategory().pipe(first()).subscribe(category => {
         const { categoryPinyin } = this.albumInfo.crumbs;
         if (category !== categoryPinyin) {
-          this.categoryServe.setCategory(categoryPinyin);
+          this.categoryStoreServe.setCategory(categoryPinyin);
         }
       });
-      this.categoryServe.setSubCategory([this.albumInfo.albumTitle]);
+      this.categoryStoreServe.setSubCategory([this.albumInfo.albumTitle]);
       this.pageServe.setPageInfo(
         this.albumInfo.albumTitle,
         '专辑详情',
