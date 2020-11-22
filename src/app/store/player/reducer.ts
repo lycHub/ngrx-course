@@ -18,7 +18,7 @@ export const adapter: EntityAdapter<Track> = createEntityAdapter<Track>({
 });
 
 export const initialState = adapter.getInitialState({
-  currentIndex: 0,
+  currentIndex: -1,
   playing: false
 });
 

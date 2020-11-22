@@ -78,6 +78,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
       this.playerStoreServe.getPlaying()
     ).subscribe(([currentIndex, currentTrack, album, playing]) => {
       this.currentIndex = currentIndex;
+      // console.log('currentIndex', this.currentIndex);
       this.currentTrack = currentTrack;
       this.album = album;
       this.setPlaying(playing);
@@ -86,6 +87,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   private setPlaying(playing: boolean): void {
+    // console.log('playing', playing, this.playing);
     if (playing !== this.playing) {
       this.playing = playing;
       if (playing && this.canPlay) {
@@ -116,7 +118,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   delete(delIndex: number): void {
     let newTracks = this.trackList.slice();
-    let canPlay = true;
     let newIndex = this.currentIndex;
     let delTarget: Track;
     if (newTracks.length <= 1) {
@@ -133,17 +134,15 @@ export class PlayerComponent implements OnInit, OnDestroy {
             // 不用处理，后面的曲目会顶上来
           } else {
             newIndex--;
-            canPlay = false;
           }
         } else {
           newIndex = -1;
-          canPlay = false;
         }
       }
       delTarget = newTracks.splice(delIndex, 1)[0];
     }
     this.playerStoreServe.deleteTrack(delTarget?.trackId);
-    this.updateIndex(newIndex, canPlay);
+    this.updateIndex(newIndex);
   }
 
   togglePlay(): void {
@@ -180,9 +179,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateIndex(index: number, canPlay = false): void {
-    this.playerStoreServe.setCurrentIndex(index);
-    this.canPlay = canPlay;
+  private updateIndex(index: number): void {
+    if (index !== this.currentIndex) {
+      this.canPlay = false;
+      this.playerStoreServe.setPlaying(false);
+      this.playerStoreServe.setCurrentIndex(index);
+    }
   }
 
   canplay(): void {

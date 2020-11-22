@@ -104,7 +104,8 @@ export class PlayerStoreService {
       } else {
         this.addTrack(track);
         // 最后一个曲目的索引？
-        this.setCurrentIndex(tracks.length - 1);
+        this.setPlaying(false);
+        this.setCurrentIndex(tracks.length);
       }
     });
   }
@@ -117,7 +118,7 @@ export class PlayerStoreService {
     this.addTracks(tracks);
     this.getTracks().pipe(first()).subscribe(trackList => {
       const playIndex = trackList.findIndex(item => item.trackId === tracks[index].trackId);
-      // console.log('playIndex', playIndex);
+      this.setPlaying(false);
       this.setCurrentIndex(playIndex);
     });
   }

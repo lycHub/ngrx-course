@@ -5,11 +5,11 @@ import {combineLatest, Observable, Subject} from 'rxjs';
 import {AlbumInfo, Anchor, RelateAlbum, Track} from '../../services/apis/types';
 import {IconType} from '../../share/directives/icon/type';
 import {first, skip, takeUntil} from 'rxjs/operators';
-import {PlayerService} from '../../services/business/player.service';
 import {MessageService} from '../../share/components/message/message.service';
 import {PageService} from '../../services/tools/page.service';
 import {CategoryStoreService} from '../../services/business/category.store.service';
 import {AlbumStoreService} from '../../services/business/album.store.service';
+import {PlayerStoreService} from '../../services/business/player.store.service';
 
 interface MoreState {
   full: boolean;
@@ -50,33 +50,34 @@ export class AlbumComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private categoryStoreServe: CategoryStoreService,
     private cdr: ChangeDetectorRef,
-    private playerServe: PlayerService,
+    private playerStoreServe: PlayerStoreService,
     private messageServe: MessageService,
     private pageServe: PageService,
     private albumStoreServe: AlbumStoreService
   ) { }
 
   playAll(): void {
-    this.playerServe.setTracks(this.tracks);
-    this.playerServe.setCurrentIndex(0);
-    this.playerServe.setAlbum(this.albumInfo);
+    this.playerStoreServe.setTracks(this.tracks);
+    this.playerStoreServe.setPlaying(false);
+    this.playerStoreServe.setCurrentIndex(0);
+    this.playerStoreServe.setAlbum(this.albumInfo);
   }
 
   toggleTrack(track: Track, act: 'play' | 'pause'): void {
     if (act === 'pause') {
-      this.playerServe.setPlaying(false);
+      this.playerStoreServe.setPlaying(false);
     } else {
       this.setAlbumInfo();
-      this.playerServe.playTrack(track);
+      this.playerStoreServe.playTrack(track);
     }
   }
 
   play(needPlay): void {
     if (this.selectedTracks.length) {
       if (needPlay) {
-        this.playerServe.playTracks(this.selectedTracks);
+        this.playerStoreServe.playTracks(this.selectedTracks);
       } else {
-        this.playerServe.addTracks(this.selectedTracks);
+        this.playerStoreServe.addTracks(this.selectedTracks);
         this.messageServe.info('已添加');
       }
       this.setAlbumInfo();
@@ -88,7 +89,7 @@ export class AlbumComponent implements OnInit, OnDestroy {
 
   private setAlbumInfo(): void {
     if (!this.currentTrack) {
-      this.playerServe.setAlbum(this.albumInfo);
+      this.playerStoreServe.setAlbum(this.albumInfo);
     }
   }
 
@@ -175,8 +176,8 @@ export class AlbumComponent implements OnInit, OnDestroy {
   }
   private watchPlayer(): void {
     combineLatest(
-      this.playerServe.getCurrentTrack(),
-      this.playerServe.getPlaying()
+      this.playerStoreServe.getCurrentTrack(),
+      this.playerStoreServe.getPlaying()
     ).pipe(takeUntil(this.destory$)).subscribe(([track, playing]) => {
       this.currentTrack = track;
       this.playing = playing;
