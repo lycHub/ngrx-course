@@ -40,7 +40,7 @@ export const reducer = createReducer(
   on(clearAll,
     (state) => adapter.removeAll({
       ...state,
-      currentIndex: 0,
+      currentIndex: -1,
       playing: false,
       album: null,
       currentTrack: null

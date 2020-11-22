@@ -13,7 +13,8 @@ import {AlbumInfo, Track} from '../../services/apis/types';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {DOCUMENT} from '@angular/common';
 import {PlayerStoreService} from '../../services/business/player.store.service';
-import {combineLatest, Subscription} from 'rxjs';
+import {combineLatest, Observable, Subscription} from 'rxjs';
+import {first} from 'rxjs/operators';
 
 const PANEL_HEIGHT = 280;
 const THUMBNAIL_WIDTH = 50;
@@ -50,8 +51,8 @@ const THUMBNAIL_WIDTH = 50;
 export class PlayerComponent implements OnInit, OnDestroy {
   @Input() trackList: Track[] = [];
   currentIndex = 0;
-  currentTrack: Track;
-  album: AlbumInfo;
+  currentTrack$: Observable<Track>;
+  album$: Observable<AlbumInfo>;
   playing = false;
   private canPlay = false;
   private audioEl: HTMLAudioElement;
@@ -71,16 +72,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.sub = combineLatest(
-      this.playerStoreServe.getCurrentIndex(),
-      this.playerStoreServe.getCurrentTrack(),
-      this.playerStoreServe.getAlbum(),
-      this.playerStoreServe.getPlaying()
-    ).subscribe(([currentIndex, currentTrack, album, playing]) => {
+    this.playerStoreServe.getCurrentIndex().subscribe(currentIndex => {
       this.currentIndex = currentIndex;
-      // console.log('currentIndex', this.currentIndex);
-      this.currentTrack = currentTrack;
-      this.album = album;
+      this.cdr.markForCheck();
+    });
+    this.currentTrack$ = this.playerStoreServe.getCurrentTrack();
+    this.album$ = this.playerStoreServe.getAlbum();
+    this.playerStoreServe.getPlaying().subscribe(playing => {
       this.setPlaying(playing);
       this.cdr.markForCheck();
     });
@@ -146,16 +144,17 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   togglePlay(): void {
-    if (this.currentTrack) {
-      if (this.canPlay) {
-        const playing = !this.playing;
-        this.playerStoreServe.setPlaying(playing);
+    this.currentTrack$.pipe(first()).subscribe(currentTrack => {
+      if (currentTrack) {
+        if (this.canPlay) {
+          this.playerStoreServe.setPlaying(!this.playing);
+        }
+      } else {
+        if (this.trackList.length) {
+          this.updateIndex(0);
+        }
       }
-    } else {
-      if (this.trackList.length) {
-        this.updateIndex(0);
-      }
-    }
+    });
   }
 
   changePlay(index: number): void {

@@ -5,13 +5,14 @@ import {MessageService} from '../../share/components/message/message.service';
 import {requestAlbum, requestAudio, setCurrentTrack} from './actions';
 import {catchError, map, mergeMap, tap, withLatestFrom} from 'rxjs/operators';
 import {of, throwError} from 'rxjs';
+import {PlayerStoreService} from '../../services/business/player.store.service';
 
 @Injectable()
 export class PlayerEffects {
   constructor(
     private actions$: Actions,
     private albumServe: AlbumService,
-    // private playerStoreServe: PlayerStoreService,
+    private playerStoreServe: PlayerStoreService,
     private messageServe: MessageService
   ) {}
 
@@ -39,9 +40,10 @@ export class PlayerEffects {
     ofType(requestAlbum),
     mergeMap(action => this.albumServe.album(action.albumId)),
     tap(({ mainInfo, tracksInfo, albumId }) => {
-      // this.playerStoreServe.setTracks(tracksInfo.tracks);
-      // this.playerStoreServe.setCurrentIndex(0);
-      // this.playerStoreServe.setAlbum({ ...mainInfo, albumId });
+      this.playerStoreServe.setTracks(tracksInfo.tracks);
+      this.playerStoreServe.setPlaying(false);
+      this.playerStoreServe.setCurrentIndex(0);
+      this.playerStoreServe.setAlbum({ ...mainInfo, albumId });
     }),
     catchError(error => throwError(error))
     ),

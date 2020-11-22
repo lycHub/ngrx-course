@@ -1,7 +1,7 @@
 <div class="xm-player-box" xmDrag (finished)="dragEnd($event)" (mouseenter)="hoverHost()">
   <div class="xm-player" #player>
     <div class="thumbnail">
-      <img xmDragHandler [src]="album.cover || '../../../assets/images/default-pic.jpg'" />
+      <img xmDragHandler [src]="(album$ | ngrxPush).cover || '../../../assets/images/default-pic.jpg'" />
     </div>
     <div class="middle">
       <div class="operate">
@@ -22,7 +22,7 @@
       <ul>
         <li
           *ngFor="let item of trackList; index as i; trackBy: trackByTracks"
-          [class.current]="item.trackId === currentTrack?.trackId">
+          [class.current]="item.trackId === (currentTrack$ | ngrxPush)?.trackId">
           <p class="title ellipsis" [title]="item.title" (click)="changePlay(i)">{{ item.title }}</p>
           <i class="icon" xmIcon="delete" (click)="delete(i)"></i>
         </li>
@@ -31,7 +31,7 @@
   </div>
   <audio
     #audio
-    [src]="currentTrack?.src"
+    [src]="(currentTrack$ | ngrxPush)?.src"
     (canplay)="canplay()"
     (ended)="ended()"
     (error)="error()">

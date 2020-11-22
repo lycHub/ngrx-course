@@ -1,15 +1,15 @@
 import {Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
-import {AlbumArgs, AlbumService, AlbumsInfo, CategoryInfo} from '../../services/apis/album.service';
+import {AlbumArgs, AlbumsInfo, CategoryInfo} from '../../services/apis/album.service';
 import {Album, MetaData, MetaValue, SubCategory} from '../../services/apis/types';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {first, skip, withLatestFrom} from 'rxjs/operators';
 import {WindowService} from '../../services/tools/window.service';
 import {storageKeys} from '../../configs';
-import {PlayerService} from '../../services/business/player.service';
 import {PageService} from '../../services/tools/page.service';
 import {CategoryStoreService} from '../../services/business/category.store.service';
 import {AlbumStoreService} from '../../services/business/album.store.service';
+import {PlayerStoreService} from '../../services/business/player.store.service';
 
 interface CheckedMeta {
   metaRowId: number;
@@ -40,13 +40,12 @@ export class AlbumsComponent implements OnInit {
   sorts = ['综合排序', '最近更新', '播放最多'];
 
   constructor(
-    private albumServe: AlbumService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
     private categoryStoreServe: CategoryStoreService,
     private winServe: WindowService,
-    private playerServe: PlayerService,
+    private playerStoreServe: PlayerStoreService,
     private pageServe: PageService,
     private albumStoreServe: AlbumStoreService
   ) { }
@@ -89,11 +88,7 @@ export class AlbumsComponent implements OnInit {
 
   playAlbum(event: MouseEvent, albumId: number): void {
     event.stopPropagation();
-    this.albumServe.album(albumId.toString()).subscribe(({ mainInfo, tracksInfo }) => {
-      this.playerServe.setTracks(tracksInfo.tracks);
-      this.playerServe.setCurrentIndex(0);
-      this.playerServe.setAlbum({ ...mainInfo, albumId });
-    });
+    this.playerStoreServe.requestAlbum(albumId.toString());
   }
 
   changeSubCategory(subCategory?: SubCategory): void {
