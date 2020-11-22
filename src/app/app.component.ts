@@ -1,13 +1,13 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {AlbumInfo, Category, Track} from './services/apis/types';
+import {Category, Track} from './services/apis/types';
 import {Router} from '@angular/router';
-import {combineLatest, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {WindowService} from './services/tools/window.service';
 import {storageKeys} from './configs';
-import {PlayerService} from './services/business/player.service';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {ContextStoreService} from './services/business/context.store.service';
 import {CategoryStoreService} from './services/business/category.store.service';
+import {PlayerStoreService} from './services/business/player.store.service';
 
 @Component({
   selector: 'xm-root',
@@ -33,20 +33,14 @@ export class AppComponent implements OnInit {
   categoryPinyin = '';
   showLogin = false;
   showPlayer = false;
-  playerInfo: {
-    trackList: Track[];
-    currentIndex: number;
-    currentTrack: Track;
-    album: AlbumInfo;
-    playing: boolean;
-  };
+  trackList: Track[];
   constructor(
     private cdr: ChangeDetectorRef,
     private router: Router,
     private winServe: WindowService,
     private contextStoreServe: ContextStoreService,
     private categoryStoreServe: CategoryStoreService,
-    private playerServe: PlayerService
+    private playerStoreServe: PlayerStoreService,
   ) {}
 
   ngOnInit(): void {
@@ -57,21 +51,8 @@ export class AppComponent implements OnInit {
     this.watchPlayer();
   }
   private watchPlayer(): void {
-    combineLatest(
-      this.playerServe.getTracks(),
-      this.playerServe.getCurrentIndex(),
-      this.playerServe.getCurrentTrack(),
-      this.playerServe.getAlbum(),
-      this.playerServe.getPlaying()
-    ).subscribe(([trackList, currentIndex, currentTrack, album, playing]) => {
-      // console.log('trackList', trackList);
-      this.playerInfo = {
-        trackList,
-        currentIndex,
-        currentTrack,
-        album,
-        playing
-      }
+    this.playerStoreServe.getTracks().subscribe(trackList => {
+      this.trackList = trackList || [];
       if (trackList.length) {
         this.showPlayer = true;
         this.cdr.markForCheck();
@@ -94,7 +75,7 @@ export class AppComponent implements OnInit {
   }
 
   closePlayer(): void {
-    this.playerServe.clear();
+    this.playerStoreServe.clear();
     this.showPlayer = false;
   }
 }

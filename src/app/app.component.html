@@ -29,11 +29,7 @@
 </div>
 <xm-login [show]="showLogin" (hide)="showLogin = false"></xm-login>
 <xm-player
-  [trackList]="playerInfo.trackList"
-  [currentIndex]="playerInfo.currentIndex"
-  [currentTrack]="playerInfo.currentTrack"
-  [album]="playerInfo.album"
-  [playing]="playerInfo.playing"
+  [trackList]="trackList"
   (closed)="closePlayer()"
   *ngIf="showPlayer"
   @fadePlayer>

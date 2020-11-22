@@ -20,7 +20,7 @@ import {first} from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class PlayerService {
+export class PlayerStoreService {
   readonly player$: Observable<PlayerState>;
   private currentIndex = 0;
   constructor(readonly store$: Store<PlayerStoreModule>) {
