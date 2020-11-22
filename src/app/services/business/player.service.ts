@@ -41,13 +41,8 @@ export class PlayerService {
 
   setCurrentTrack(track: Track): void {
     if (track) {
-      const target = this.trackList.find(item => item.trackId === track.trackId);
-      if (target) {
-        if (target.src) {
-          this.currentTrack$.next(track);
-        } else {
-          this.getAudio(track);
-        }
+      if (track.src) {
+        this.currentTrack$.next(track);
       } else {
         this.getAudio(track);
       }
@@ -85,6 +80,7 @@ export class PlayerService {
         this.setCurrentIndex(targetIndex);
       }
     } else {
+      // addTrack
       this.setTracks(this.trackList.concat(track));
       this.setCurrentIndex(this.trackList.length - 1);
     }

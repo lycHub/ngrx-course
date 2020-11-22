@@ -18,8 +18,8 @@ export const metaReducers: MetaReducer<any>[] = [debug];
 
 export const STORE_CONFIG = {
   runtimeChecks: {
-    // strictStateImmutability: true,
-    // strictActionImmutability: true,
+    strictStateImmutability: false,
+    strictActionImmutability: false,
     strictStateSerializability: true,
     strictActionSerializability: true,
     strictActionWithinNgZone: true,

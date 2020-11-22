@@ -8,6 +8,7 @@ import {BookStoreModule} from './book';
 import {RouterStoreModule} from './router';
 import {CategoryStoreModule} from './category';
 import {AlbumStoreModule} from './album';
+import {PlayerStoreModule} from './player';
 
 
 
@@ -20,6 +21,7 @@ import {AlbumStoreModule} from './album';
     ContextStoreModule,
     CategoryStoreModule,
     AlbumStoreModule,
+    PlayerStoreModule,
     BookStoreModule,
     RouterStoreModule,
     extModules
