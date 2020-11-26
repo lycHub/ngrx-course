@@ -28,10 +28,12 @@
   </div>
 </div>
 <xm-login [show]="showLogin" (hide)="showLogin = false"></xm-login>
-<xm-player
-  [trackList]="trackList"
-  (closed)="closePlayer()"
-  *ngIf="showPlayer"
-  @fadePlayer>
-</xm-player>
+<ng-container *ngrxLet="trackList$ as trackList">
+  <xm-player
+    [trackList]="trackList"
+    (closed)="closePlayer()"
+    *ngIf="trackList.length"
+    @fadePlayer>
+  </xm-player>
+</ng-container>
 <xm-back-top></xm-back-top>

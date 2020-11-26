@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {Category, Track} from './services/apis/types';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
@@ -32,10 +32,8 @@ export class AppComponent implements OnInit {
   subCategory$: Observable<string[]>;
   categoryPinyin = '';
   showLogin = false;
-  showPlayer = false;
-  trackList: Track[];
+  trackList$: Observable<Track[]>;
   constructor(
-    private cdr: ChangeDetectorRef,
     private router: Router,
     private winServe: WindowService,
     private contextStoreServe: ContextStoreService,
@@ -48,16 +46,7 @@ export class AppComponent implements OnInit {
       this.contextStoreServe.userInfo();
     }
     this.init();
-    this.watchPlayer();
-  }
-  private watchPlayer(): void {
-    this.playerStoreServe.getTracks().subscribe(trackList => {
-      this.trackList = trackList || [];
-      if (trackList.length) {
-        this.showPlayer = true;
-        this.cdr.markForCheck();
-      }
-    });
+    this.trackList$ = this.playerStoreServe.getTracks();
   }
 
   changeCategory(category: Category): void {
@@ -76,6 +65,5 @@ export class AppComponent implements OnInit {
 
   closePlayer(): void {
     this.playerStoreServe.clear();
-    this.showPlayer = false;
   }
 }

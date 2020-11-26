@@ -66,8 +66,8 @@
                   "with": "src/environments/environment.prod.ts"
                 },
                 {
-                  "replace": "src/app/build-specifics/index.ts",
-                  "with": "src/app/build-specifics/index.prod.ts"
+                  "replace": "src/build-specifics/index.ts",
+                  "with": "src/build-specifics/index.prod.ts"
                 }
               ],
               "optimization": true,

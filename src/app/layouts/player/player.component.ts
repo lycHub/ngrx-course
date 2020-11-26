@@ -13,8 +13,8 @@ import {AlbumInfo, Track} from '../../services/apis/types';
 import {animate, style, transition, trigger} from '@angular/animations';
 import {DOCUMENT} from '@angular/common';
 import {PlayerStoreService} from '../../services/business/player.store.service';
-import {combineLatest, Observable, Subscription} from 'rxjs';
-import {first} from 'rxjs/operators';
+import {combineLatest, Observable, Subject, Subscription} from 'rxjs';
+import {first, takeUntil} from 'rxjs/operators';
 
 const PANEL_HEIGHT = 280;
 const THUMBNAIL_WIDTH = 50;
@@ -60,7 +60,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   isDown = true;
   putAway = false;
   private hostEl: HTMLElement;
-  private sub: Subscription;
+  private destory$ = new Subject<void>();
   @Output() closed = new EventEmitter<void>();
   @ViewChild('player', { static: true }) readonly playerRef: ElementRef;
   @ViewChild('audio', { static: true }) readonly audioRef: ElementRef;
@@ -72,13 +72,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.playerStoreServe.getCurrentIndex().subscribe(currentIndex => {
+    this.playerStoreServe.getCurrentIndex().pipe(takeUntil(this.destory$)).subscribe(currentIndex => {
       this.currentIndex = currentIndex;
       this.cdr.markForCheck();
     });
     this.currentTrack$ = this.playerStoreServe.getCurrentTrack();
     this.album$ = this.playerStoreServe.getAlbum();
-    this.playerStoreServe.getPlaying().subscribe(playing => {
+    this.playerStoreServe.getPlaying().pipe(takeUntil((this.destory$))).subscribe(playing => {
       this.setPlaying(playing);
       this.cdr.markForCheck();
     });
@@ -140,12 +140,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
       delTarget = newTracks.splice(delIndex, 1)[0];
     }
     this.playerStoreServe.deleteTrack(delTarget?.trackId);
-    this.updateIndex(newIndex);
+    this.updateIndex(newIndex, delIndex === this.currentIndex);
   }
 
   togglePlay(): void {
     this.currentTrack$.pipe(first()).subscribe(currentTrack => {
-      if (currentTrack) {
+      // console.log('currentTrack', currentTrack);
+      if (currentTrack.trackId) {
         if (this.canPlay) {
           this.playerStoreServe.setPlaying(!this.playing);
         }
@@ -178,11 +179,11 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateIndex(index: number): void {
-    if (index !== this.currentIndex) {
+  private updateIndex(index: number, changeTrack = true): void {
+    this.playerStoreServe.setCurrentIndex(index);
+    if (changeTrack) {
       this.canPlay = false;
       this.playerStoreServe.setPlaying(false);
-      this.playerStoreServe.setCurrentIndex(index);
     }
   }
 
@@ -211,7 +212,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   dragEnd(host: HTMLElement): void {
-    console.log('dragEnd', host);
+    // console.log('dragEnd', host);
     this.hostEl = host;
     const { width, height, left, top } = host.getBoundingClientRect();
     const clientWidth = this.doc.documentElement.clientWidth;
@@ -238,6 +239,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.sub?.unsubscribe();
+    this.destory$.next();
+    this.destory$?.complete();
   }
 }

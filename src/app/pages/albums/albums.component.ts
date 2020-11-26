@@ -33,7 +33,6 @@ export class AlbumsComponent implements OnInit {
     page: 1,
     perPage: 30
   };
-  total = 0;
   categoryInfo$: Observable<CategoryInfo>;
   albumsInfo$: Observable<AlbumsInfo>;
   checkedMetas: CheckedMeta[] = [];
