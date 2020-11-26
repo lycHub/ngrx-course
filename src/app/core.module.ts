@@ -22,7 +22,6 @@ import {ReactiveComponentModule} from '@ngrx/component';
 @NgModule({
   declarations: [HeaderComponent, LoginComponent, PlayerComponent],
   imports: [
-    BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
     PagesModule,
@@ -40,7 +39,7 @@ import {ReactiveComponentModule} from '@ngrx/component';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true },
   ],
-  exports: [ReactiveComponentModule, BackTopModule, HeaderComponent, BreadcrumbModule, BrowserModule, AppRoutingModule, LoginComponent, PlayerComponent]
+  exports: [ReactiveComponentModule, BackTopModule, HeaderComponent, BreadcrumbModule, AppRoutingModule, LoginComponent, PlayerComponent]
 })
 export class CoreModule {
   constructor(@SkipSelf() @Optional() parentModule: CoreModule) {

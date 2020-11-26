@@ -4,7 +4,7 @@ import {Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {map} from 'rxjs/operators';
 import {Album, AlbumInfo, Anchor, Base, Category, MetaData, RelateAlbum, SubCategory, TrackAudio, TracksInfo} from './types';
-import {stringify} from 'querystring';
+import {stringify} from 'qs';
 
 export interface CategoryInfo {
   category: Category;

@@ -31,7 +31,7 @@ export class AlbumsComponent implements OnInit {
     meta: '',
     sort: 0,
     page: 1,
-    perPage: 30
+    perPage: 35
   };
   categoryInfo$: Observable<CategoryInfo>;
   albumsInfo$: Observable<AlbumsInfo>;
