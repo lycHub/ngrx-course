@@ -7,6 +7,8 @@ import {DirectivesModule} from '../../share/directives/directives.module';
 import {PipesModule} from '../../share/pipes/pipes.module';
 import {VirtualListComponent} from './components/virtual-list/virtual-list.component';
 import {VirtualListDemoComponent} from './components/virtual-list/demo';
+import {ForofDemoComponent} from './components/forof/demo';
+import { MyForOfDirective } from './my-for-of.directive';
 
 
 @NgModule({
@@ -14,7 +16,9 @@ import {VirtualListDemoComponent} from './components/virtual-list/demo';
     ExpandsComponent,
     WithlatestfromComponent,
     VirtualListComponent,
-    VirtualListDemoComponent
+    VirtualListDemoComponent,
+    ForofDemoComponent,
+    MyForOfDirective
   ],
   imports: [
     CommonModule,

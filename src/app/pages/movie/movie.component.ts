@@ -5,20 +5,22 @@ import {MovieStore} from './movie-store.service';
   selector: 'xm-movie',
   template: `
     <div class="movies">
-      <button xmBtn xmRipples (click)="initMovie()">init movies</button>
-      <button xmBtn xmRipples (click)="addMovie()">add movie</button>
-      <button xmBtn xmRipples (click)="addMovies()">add movies</button>
-      <button xmBtn xmRipples (click)="addXmlyMovies()">add xmly movies</button>
+      <button xmBtn xmRipples (click)="initMovie()">init movies</button> |
+      <button xmBtn xmRipples (click)="addMovie()">add movie</button> |
+      <button xmBtn xmRipples (click)="delMovie()">delete movie</button> |
+      <button xmBtn xmRipples (click)="addMovies()">add movies</button> |
+      <button xmBtn xmRipples (click)="moveMovies()">move movies</button> |
+      <button xmBtn xmRipples (click)="addXmlyMovies()">add xmly movies</button> |
       <button xmBtn xmRipples (click)="resetMovies()">reset movies</button>
       <h3>movie list</h3>
       <ul>
-        <li *ngFor="let item of movies$ | ngrxPush">{{ item.title }}</li>
+        <li *xmMyFor="let item of movies$ | ngrxPush; index as i">{{ item.title }}--{{ i }}</li>
       </ul>
     
-      <h4>hot movies</h4>
+     <!-- <h4>hot movies</h4>
       <ul>
         <li *ngFor="let item of hotMovies | ngrxPush">{{ item.title }}</li>
-      </ul>
+      </ul>-->
     </div>
   `,
   styles: [
@@ -43,6 +45,13 @@ export class MovieComponent implements OnInit {
       id: 'm4',
       title: '进击的巨人'
     });
+  }
+
+  delMovie(): void {
+    this.movieStore.delMovie();
+  }
+  moveMovies(): void {
+    this.movieStore.moveMovies();
   }
 
   addXmlyMovies(): void {

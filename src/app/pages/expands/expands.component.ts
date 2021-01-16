@@ -4,7 +4,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   selector: 'xm-expands',
   template: `
     <div class="expands">
-      <xm-virtual-list-demo></xm-virtual-list-demo>
+      <xm-for-of-demo></xm-for-of-demo>
     </div>
   `,
   styles: [

@@ -34,6 +34,20 @@ export class MovieStore extends ComponentStore<MovieState> {
     return { ...state, movies: state.movies.concat(movie) };
   });
 
+  // action
+  readonly delMovie = this.updater((state) => {
+    state.movies.splice(state.movies.length - 1, 1);
+    return state;
+  });
+
+
+  // action
+  readonly moveMovies = this.updater((state) => {
+    state.movies[2] = state.movies.splice(3, 1, state.movies[2])[0];
+    // console.log('movies', state.movies);
+    return state;
+  });
+
   readonly addMovies = this.updater((state, movies: Movie[]) => {
     return { ...state, movies: state.movies.concat(movies) };
   });
