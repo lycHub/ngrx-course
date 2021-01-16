@@ -40,7 +40,7 @@ export class ScrollService {
     requestAnimationFrame(frameFunc);
   }
 
-  private setScrollTop(el: ScrollEl, topValue = 0): void {
+  setScrollTop(el: ScrollEl, topValue = 0): void {
     if (el === window) {
       this.doc.body.scrollTop = topValue;
       this.doc.documentElement.scrollTop = topValue;
