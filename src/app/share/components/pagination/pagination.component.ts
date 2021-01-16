@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, TemplateRef} from '@angular/core';
 import { clamp } from 'lodash';
 
 type PageItemType = 'page' | 'prev' | 'next' | 'prev5' | 'next5';
@@ -6,6 +6,11 @@ interface PageItem {
   type: PageItemType;
   num?: number;
   disabled?: boolean;
+}
+
+interface PaginationContext {
+  type: PageItemType;
+  num: number;
 }
 
 @Component({
@@ -17,6 +22,7 @@ export class PaginationComponent implements OnInit, OnChanges {
   @Input() total = 0;
   @Input() pageNum = 1;
   @Input() pageSize = 10;
+  @Input() itemRender: TemplateRef<PaginationContext>;
   @Output() changed = new EventEmitter<number>();
   lastNum = 0;
   listOfPageItems: PageItem[] = [];

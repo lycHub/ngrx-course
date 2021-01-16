@@ -7,14 +7,17 @@
       [class.checked]="item.num === pageNum"
       (click)="pageClick(item)">
       <ng-container [ngSwitch]="item.type">
-        <a *ngSwitchCase="'page'">{{ item.num }}</a>
-        <ng-container *ngSwitchDefault>
+        <ng-template #defTpl>
+          <a *ngSwitchCase="'page'">{{ item.num }}</a>
+          <ng-container *ngSwitchDefault>
           <span [ngSwitch]="item.type">
             <i *ngSwitchCase="'prev'" xmIcon="previewleft" class="icon"></i>
             <i *ngSwitchCase="'next'" xmIcon="previewright" class="icon"></i>
             <i *ngSwitchDefault xmIcon="more" class="icon"></i>
           </span>
-        </ng-container>
+          </ng-container>
+        </ng-template>
+        <ng-template *ngTemplateOutlet="itemRender || defTpl; context: { $implicit: item.type, num: item.num }"></ng-template>
       </ng-container>
     </li>
   </ul>

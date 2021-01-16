@@ -75,6 +75,13 @@
         [total]="albumsInfo?.total"
         (changed)="changePage($event)">
       </xm-pagination>
+      <!--
+        [itemRender]="pageItem"
+        <ng-template #pageItem let-type let-num="num">
+        <span style="color: aqua" *ngIf="type === 'page'">{{ num }}</span>
+        <span *ngIf="type !== 'page'">{{ type }}</span>
+      </ng-template>
+      -->
     </div>
   </ng-container>
 </div>
