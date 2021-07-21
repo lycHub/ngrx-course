@@ -9,6 +9,8 @@ import {VirtualListComponent} from './components/virtual-list/virtual-list.compo
 import {VirtualListDemoComponent} from './components/virtual-list/demo';
 import {ForofDemoComponent} from './components/forof/demo';
 import { MyForOfDirective } from './my-for-of.directive';
+import { XmTemplateOutletDirective } from './directives/xm-template-outlet.directive';
+import {TestComponent} from './components/test-use/test.component';
 
 
 @NgModule({
@@ -18,7 +20,9 @@ import { MyForOfDirective } from './my-for-of.directive';
     VirtualListComponent,
     VirtualListDemoComponent,
     ForofDemoComponent,
-    MyForOfDirective
+    MyForOfDirective,
+    XmTemplateOutletDirective,
+    TestComponent
   ],
   imports: [
     CommonModule,

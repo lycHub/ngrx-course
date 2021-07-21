@@ -1,0 +1,9 @@
+<div>
+  <p (click)="handleClick()">title: {{ title }}</p>
+  <p>suffix: {{ greeter.suffix$ | async }}</p>
+  <button (click)="changeSuffix()">changeSuffix</button>
+  <div>
+    <p>这里是contents内容：</p>
+    <ng-content></ng-content>
+  </div>
+</div>
