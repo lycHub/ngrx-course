@@ -11,6 +11,7 @@ import {ForofDemoComponent} from './components/forof/demo';
 import { MyForOfDirective } from './my-for-of.directive';
 import { XmTemplateOutletDirective } from './directives/xm-template-outlet.directive';
 import {TestComponent} from './components/test-use/test.component';
+import {XmComponentOutletDirective} from './directives/xm-component-outlet.directive';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import {TestComponent} from './components/test-use/test.component';
     ForofDemoComponent,
     MyForOfDirective,
     XmTemplateOutletDirective,
-    TestComponent
+    TestComponent,
+    XmComponentOutletDirective
   ],
   imports: [
     CommonModule,

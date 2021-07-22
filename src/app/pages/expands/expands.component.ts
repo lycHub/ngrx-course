@@ -2,6 +2,7 @@ import {Component, OnInit, ChangeDetectionStrategy, ViewChild, AfterViewInit, In
 import {TestComponent} from './components/test-use/test.component';
 import {NgComponentOutlet} from '@angular/common';
 import {GreeterService} from './components/test-use/GreeterService';
+import {XmComponentOutletDirective} from './directives/xm-component-outlet.directive';
 
 @Component({
   selector: 'xm-expands',
@@ -10,7 +11,7 @@ import {GreeterService} from './components/test-use/GreeterService';
       <p>
         <button (click)="changeContext()">changeContext</button>
       </p>
-      <ng-container *ngComponentOutlet="testComp;content: myContent;injector: myInjector;"></ng-container>
+      <ng-container *xmComponentOutlet="testComp;content: myContent;injector: myInjector;"></ng-container>
     </div>
   `,
   styles: [
@@ -21,7 +22,7 @@ export class ExpandsComponent implements OnInit, AfterViewInit {
   testComp = TestComponent;
   myInjector: Injector;
   myContent = [[document.createTextNode('Ahoj'), document.createTextNode('Svet')]];
-  @ViewChild(NgComponentOutlet) readonly outlet: NgComponentOutlet;
+  @ViewChild(XmComponentOutletDirective) readonly outlet: XmComponentOutletDirective;
   constructor(injector: Injector) {
     this.myInjector = Injector.create({
       providers: [{provide: GreeterService}], parent: injector}
@@ -33,8 +34,7 @@ export class ExpandsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.outlet) {
-      // @ts-ignore
-      this.outlet._componentRef.instance.click.subscribe(res => {
+      this.outlet.componentRef.instance.click.subscribe(res => {
         console.log('clicked', res);
       });
     }
@@ -42,8 +42,7 @@ export class ExpandsComponent implements OnInit, AfterViewInit {
 
   changeContext(): void {
     if (this.outlet) {
-      // @ts-ignore
-      this.outlet._componentRef.instance.changeTitle('abc');
+      this.outlet.componentRef.instance.changeTitle('abc');
     }
   }
 }
