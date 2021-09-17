@@ -1,8 +1,6 @@
 name: GitHub Actions Build and Deploy
 on:
   push:
-    branches:
-      - server-test
     tags:
       - 'v*'
 jobs:
@@ -17,10 +15,11 @@ jobs:
         run: |
           npm install
           npm run-script build
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
-          BRANCH: gh-pages
-          FOLDER: dist
-          CLEAN: true
+      - name: Deploy to Server
+        uses: hengkx/ssh-deploy@v1.0.1
+        with: # 以下为参数
+          USERNAME: 'root'
+          HOST: ${{ secrets.SERVER_IP }}
+          PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+          SOURCE: 'dist'
+          TARGET: '/projects/ng-course'
